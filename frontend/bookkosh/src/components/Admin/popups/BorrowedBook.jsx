@@ -32,7 +32,7 @@ function BorrowedBook() {
 
   return (
 <div className="flex flex-col text-left gap-2">
-  <div className=" md:grid sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 border-b-2  text-blue gap-4 font-semibold hidden">
+  <div className=" md:grid sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-8 border-b-2  text-blue gap-4 font-semibold hidden">
     <p>ISBN</p>
     <p>Title</p>
     <p>Firstname</p>
@@ -40,13 +40,14 @@ function BorrowedBook() {
     <p>From</p>
     <p>To</p>
     <p>Returned</p>
+    <p>Fine</p>
   </div>
   
   {borrowedbooks.length === 0 ? (
     <p className="text-center mt-4">No borrowed books</p>
   ) : (
     borrowedbooks.map((borrowedbook) => (
-      <div key={borrowedbook._id} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4 text-left text-sm  bg-white  p-2 ">
+      <div key={borrowedbook._id} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-4 text-left text-sm  bg-white  p-2 ">
         <p>{borrowedbook.isbn}</p>
         <p>{borrowedbook.title}</p>
         <p>
@@ -56,6 +57,7 @@ function BorrowedBook() {
         <p>{new Date(borrowedbook.fromDate).toLocaleDateString()}</p>
         <p>{new Date(borrowedbook.toDate).toLocaleDateString()}</p>
         <p>{borrowedbook.returned ? "Yes" : "No"}</p>
+        <p><span>Rs.</span>{borrowedbook.fine}</p>
       </div>
     ))
   )}

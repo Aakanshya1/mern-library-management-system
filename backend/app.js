@@ -9,7 +9,7 @@ const DashboardRouter = require('./routes/DashboardRouter')
 const UserModel = require('./Models/Userdata')
 const multer = require('multer')
 const BooksRouter = require('./routes/BooksRouter')
-
+require('../backend/tasks/FineCalculator')
 app.use(bodyParser.json());
 
 app.use(cors());

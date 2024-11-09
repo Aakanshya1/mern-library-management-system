@@ -228,10 +228,14 @@ const borrowBook = async (req, res)=>{
          await borrowRecord.save();
          book.bookCount -= 1;
          if (book.bookCount === 0) {
-            book.bookStatus = 'Borrowed'; // Update status if count is zero
+            book.bookStatus = 'Borrowed'; 
         }
       
          await book.save();
+         const pointsEarned = 2; 
+        user.borrowedpoints += pointsEarned;
+        user.totalPoints += pointsEarned;
+         await user.save();
 
          res.status(201).json({message :"Book borrowed Successfully", borrowRecord, available:true})
     } catch (error) {
@@ -241,7 +245,7 @@ const borrowBook = async (req, res)=>{
 }
 const displayBorrowedBooks = async (req,res)=>{
     try {
-        const borrowedbook = await BookBorrow.find()
+        const borrowedbook = await BookBorrow.find({returned:false})
         .populate('bookId', 'isbn title')
         .populate('userId','firstname lastname email')
         .exec();
@@ -255,7 +259,8 @@ const displayBorrowedBooks = async (req,res)=>{
             email: BookBorrow.userId.email,
             toDate:BookBorrow.toDate,
             fromDate:BookBorrow.fromDate,
-            returned:BookBorrow.returned
+            returned:BookBorrow.returned,
+            fine:BookBorrow.fine,
         }))
         if(borrowedbooks.length == 0){
             return res.status(404)
@@ -272,5 +277,79 @@ const displayBorrowedBooks = async (req,res)=>{
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+const userBorrowedBooks = async(req,res)=>{
+   
+    try {
+        const userId = req.user._id;
+    
+        const borrowedbooks = await BookBorrow.find({ userId, returned: false })
+        .populate('bookId','isbn title bookimage')
+        .exec();
+        const borrowedbooklist = borrowedbooks.map(BookBorrow =>({
+            isbn: BookBorrow.bookId.isbn,
+            title: BookBorrow.bookId.title,
+            toDate:BookBorrow.toDate,
+            fromDate:BookBorrow.fromDate,
+            returned:BookBorrow.returned,
+            fine:BookBorrow.fine,
+            bookimage:BookBorrow.bookId.bookimage,
+        }))
+        if(borrowedbooklist.length == 0){
+            return res.status(404)
+            .json({message:'Books not found'})
+        }
+            res.status(200).json({
+                success:true,
+                message:"Borrowed books retrived successfully",
+                borrowedbooklist:borrowedbooklist,
+            })
+    }  catch (error) {
+        console.error('Error fetching borrowed books:', error);
+        res.status(500).json({ message: 'Internal server error' });
+      
+    }
+}
 
-module.exports = { addbook , showAllbooks,updateBook,deleteBook,SearchBooksByTitle,SearchBooksByIsbn,borrowBook,displayBorrowedBooks};
+const returnBooks = async(req,res)=>{
+   
+
+    try {
+        const userId = req.user._id;
+        const {bookId}= req.body;
+        const  borrowedRecord = await BookBorrow.findOne({bookId,userId, returned:false});
+        if(!borrowedRecord){
+            return res.status(404)
+            .json({message:'Borrowed book not found or already returned'})
+        }
+        if (borrowedRecord.fine>0) {
+            res.status(400)
+            .json({
+                message:`A fine of $${borrowedRecord.fine} is due.Please Complete the payment before returning the book`,
+                fine:borrowedRecord.fine
+            })
+        }
+        borrowedRecord.returned = true;
+        await borrowedRecord.save();
+
+        const book = await BookModel.find(bookId);
+        book.bookCount +=1;
+        book.bookStatus = book.bookCount >0? 'Available':'Borrowed';
+        await book.save();
+        res.status(200)
+        .json({message:'Book returned successfully'});
+    } catch (error) {
+        res.status(500)
+        .json({message:'failed to return book'})
+      
+    }
+}
+
+module.exports = { addbook , 
+    showAllbooks,
+    updateBook,
+    deleteBook,
+    SearchBooksByTitle,
+    SearchBooksByIsbn,
+    borrowBook,
+    displayBorrowedBooks,
+    userBorrowedBooks,returnBooks};

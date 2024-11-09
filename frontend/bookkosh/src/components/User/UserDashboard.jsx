@@ -1,7 +1,6 @@
 import React from 'react'
 import { useState,useEffect } from 'react';
 import { FaBookOpen,FaStar, FaBriefcase, FaUser  } from "react-icons/fa";
-import { userdashpoints, bookslist } from '../../constants/Constants';
 import axios from 'axios';
 
 function UserDashboard() {
@@ -30,6 +29,37 @@ useEffect(()=>{
   };fetchBooks();
 },[]);
 
+
+const [userData, setUserData] = useState({
+  firstname: '',
+  lastname: '',
+  email: '',
+  phone: '',
+  avatar: '',
+});
+
+
+useEffect(() => {
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/api/user', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      setUserData(response.data);
+      setAvatarPreview(response.data.avatar || 'default-avatar-url'); // Set the avatar URL or default
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
+
+  fetchUserData();
+}, []);
+
   return (
 
     <>
@@ -46,13 +76,24 @@ useEffect(()=>{
           </div>
         </div>
         <div className='border-4 text-blue gap-6 flex flex-row flex-[0.5] rounded-md justify-center items-center bg-white '>
-          {userdashpoints.map((points,key)=>
-               <div key={key} className='items-center flex flex-col justify-center  '>
-               <span className='md:text-2xl text-xl '>{points.logo}</span>
-               <p>{points.points}</p>
-               <p className='md:text-sm text-xs'>{points.pointname}</p>
-             </div > 
-        )}
+        
+        <div className='items-center flex flex-col justify-center'>
+              <span className='md:text-2xl text-xl'><FaBookOpen /></span>
+              <p>{userData.borrowedpoints}</p>
+              <p className='md:text-sm text-xs'>Borrowed Points</p>
+            </div>
+            <div className='items-center flex flex-col justify-center'>
+              <span className='md:text-2xl text-xl'><FaStar /></span>
+              <p>{userData.borrowedpoints}</p>
+              <p className='md:text-sm text-xs'>Points Earned</p>
+            </div>
+            <div className='items-center flex flex-col justify-center'>
+              <span className='md:text-2xl text-xl'><FaBriefcase/></span>
+              <p>{userData.contributionpoints}</p>
+              <p className='md:text-sm text-xs'>Contribution</p>
+            </div>
+      
+      
         
          </div>
 

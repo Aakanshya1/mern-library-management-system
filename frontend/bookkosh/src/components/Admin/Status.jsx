@@ -33,7 +33,7 @@ function Status() {
        
       </div>
     
-      <div>
+      <div className=''>
         <div>
           {currentStatus.statusname}
         </div>

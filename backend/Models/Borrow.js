@@ -22,6 +22,10 @@ const BorrowSchema = new mongoose.Schema({
     returned:{
         type:Boolean,
         default:false,
+    },
+    fine:{
+        type:Number,
+        default:0,
     }
 
 },{timestamps:true})

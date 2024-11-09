@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { userdashpoints } from '../../constants/Constants';
+
 import Button from '../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { handleError, handleSuccess } from '../../../utils';

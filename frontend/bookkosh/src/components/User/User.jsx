@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { userdashpoints } from '../../constants/Constants';
+import { FaUser,FaBookOpen,FaStar, FaBriefcase } from "react-icons/fa";
 import Button from '../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { handleError, handleSuccess } from '../../../utils';
@@ -114,13 +114,24 @@ const User = () => {
       <div className='flex md:flex-row flex-col justify-between'>
         {/* User Dashboard Points */}
         <div className='border-4 text-blue gap-6 flex md:flex-col flex-row p-8 md:w-fit rounded-md justify-center items-center bg-white'>
-          {userdashpoints.map((points, key) => (
-            <div key={key} className='items-center flex flex-col justify-center'>
-              <span className='md:text-2xl text-xl'>{points.logo}</span>
-              <p>{points.points}</p>
-              <p className='md:text-sm text-xs'>{points.pointname}</p>
+          
+            <div className='items-center flex flex-col justify-center'>
+              <span className='md:text-2xl text-xl'><FaBookOpen /></span>
+              <p>{userData.borrowedpoints}</p>
+              <p className='md:text-sm text-xs'>Borrowed Points</p>
             </div>
-          ))}
+            <div className='items-center flex flex-col justify-center'>
+              <span className='md:text-2xl text-xl'><FaStar /></span>
+              <p>{userData.borrowedpoints}</p>
+              <p className='md:text-sm text-xs'>Points Earned</p>
+            </div>
+            <div className='items-center flex flex-col justify-center'>
+              <span className='md:text-2xl text-xl'><FaBriefcase/></span>
+              <p>{userData.contributionpoints}</p>
+              <p className='md:text-sm text-xs'>Contribution</p>
+            </div>
+      
+      
         </div>
 
         {/* User Profile Section */}
