@@ -1,9 +1,12 @@
 import React , { useEffect, useState } from 'react'
 import axios from 'axios';
+import ReturnBookPopup from './ReturnBook'
 function Borrowed() {
     const [borrowedbooklist, setBorrowedBookList] = useState([]);  // Initializing to empty array
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showReturnPopup,setShowReturnPopup]= useState(false);
+    const [bookToReturn,setBookToReturn]=useState(null);
   
    useEffect(()=>{
     const fetchBooks = async()=>{
@@ -21,8 +24,11 @@ function Borrowed() {
       }
     };fetchBooks();
    },[])
-  
-   
+
+const handleReturnClick = (book) => {
+  setBookToReturn(book);
+  setShowReturnPopup(true);
+};
   
     return (
   <div className="flex flex-row text-left gap-8  rounded-md  w-fit">
@@ -43,7 +49,7 @@ function Borrowed() {
           <p className='flex flex-col'><span className='text-black  font-bold'>Submission:</span>{new Date(borrowedbooks.toDate).toLocaleDateString()}</p>
           <p className='flex flex-col'><span className='text-black  font-bold'>Status:</span>{borrowedbooks.returned ? "Returned" : "Borrowed"}</p>
           <p className='flex flex-col'><span className='text-black  font-bold'>Total Fine:</span>{borrowedbooks.fine}</p>
-          <button className=' py-2 border bg-blue rounded-md text-white uppercase hover:bg-white hover:text-blue hover:border'>Return</button>
+          <button onClick={() => handleReturnClick(borrowedbooks)} className=' py-2 border bg-blue rounded-md text-white uppercase hover:bg-white hover:text-blue hover:border'>Return</button>
           </div>
          
          
@@ -53,6 +59,14 @@ function Borrowed() {
         </div>
       ))
     )}
+    {showReturnPopup && (
+                <ReturnBookPopup 
+                showReturnPopup={showReturnPopup}
+                setShowReturnPopup={setShowReturnPopup}
+                bookToReturn={bookToReturn}
+                setBorrowedBookList={setBorrowedBookList}
+                />
+            )}
   </div>
     )  
 }

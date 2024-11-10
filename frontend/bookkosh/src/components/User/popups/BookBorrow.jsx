@@ -18,7 +18,6 @@ const BookBorrow = ({ showBorrowPopup, setShowBorrowPopup, currentBook, updateBo
         e.preventDefault();
         console.log('Book ID:', currentBook._id);
 
-        // Validate dates
         if (new Date(toDate) <= new Date(fromDate)) {
             toast.error('To Date must be after From Date.');
             return;

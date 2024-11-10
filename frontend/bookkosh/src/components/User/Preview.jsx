@@ -46,7 +46,7 @@ const Preview = ({ selectedBook, onBack, showBorrowPopup, setShowBorrowPopup, sh
       {showReservePopup && <BookReserve
   showReservePopup={showReservePopup}
   setShowReservePopup={setShowReservePopup}
-  currentBook={selectedBook} // Ensure selectedBook is defined
+  currentBook={selectedBook} 
 />}
       {showBorrowPopup && <BookBorrow 
       showBorrowPopup={showBorrowPopup} 

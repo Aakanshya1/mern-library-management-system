@@ -2,7 +2,17 @@ const router = require('express').Router();
 const ensureAuthenticated = require('../Middleware/Auth');
 const cloudinary = require('../utils/cloudinary')
 const upload = require('../Middleware/Avatar') //multer
-const {addbook, showAllbooks, updateBook, deleteBook, SearchBooksByTitle, SearchBooksByIsbn, borrowBook, displayBorrowedBooks, userBorrowedBooks,returnBooks} = require('../Controllers/BookController');
+const {addbook, 
+    showAllbooks, 
+    updateBook,
+     deleteBook, 
+     SearchBooksByTitle,
+      SearchBooksByIsbn,
+       borrowBook, 
+       displayBorrowedBooks,
+        userBorrowedBooks,
+        returnBooks
+    , displayReturnedBooks,userReturnedBooks} = require('../Controllers/BookController');
 
 
 router.post('/addbook',upload.single('bookimage'),addbook);
@@ -15,5 +25,7 @@ router.post('/borrowedbooks/:_id',ensureAuthenticated,borrowBook)
 router.get('/showborrowedbooks',displayBorrowedBooks)
 router.get('/userborrowedbooks',ensureAuthenticated,userBorrowedBooks)
 router.post('/returnbooks',ensureAuthenticated,returnBooks)
+router.get('/showreturnedbooks',displayReturnedBooks)
+router.get('/userreturnedbooks',ensureAuthenticated,userReturnedBooks)
 
 module.exports= router;

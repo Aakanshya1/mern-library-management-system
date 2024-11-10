@@ -309,7 +309,6 @@ const userBorrowedBooks = async(req,res)=>{
       
     }
 }
-
 const returnBooks = async(req,res)=>{
    
 
@@ -331,10 +330,12 @@ const returnBooks = async(req,res)=>{
         borrowedRecord.returned = true;
         await borrowedRecord.save();
 
-        const book = await BookModel.find(bookId);
-        book.bookCount +=1;
-        book.bookStatus = book.bookCount >0? 'Available':'Borrowed';
-        await book.save();
+        const book = await BookModel.findById(bookId);
+        if (book) {
+            book.bookCount += 1;
+            book.bookStatus = book.bookCount > 0 ? 'Available' : 'Borrowed';
+            await book.save();
+        }
         res.status(200)
         .json({message:'Book returned successfully'});
     } catch (error) {
@@ -343,6 +344,77 @@ const returnBooks = async(req,res)=>{
       
     }
 }
+const displayReturnedBooks = async (req,res)=>{
+    try {
+        const returnedbook = await BookBorrow.find({returned:true})
+        .populate('bookId', 'isbn title')
+        .populate('userId','firstname lastname email')
+        .exec();
+
+        const returnedbooks = returnedbook .map(BookBorrow =>({
+            isbn: BookBorrow.bookId.isbn,
+            title: BookBorrow.bookId.title,
+            userId: BookBorrow.userId._id,
+            firstname: BookBorrow.userId.firstname,
+            lastname: BookBorrow.userId.lastname,
+            email: BookBorrow.userId.email,
+            toDate:BookBorrow.toDate,
+            fromDate:BookBorrow.fromDate,
+            returned:BookBorrow.returned,
+            fine:BookBorrow.fine,
+        }))
+        if(returnedbooks.length == 0){
+            return res.status(404)
+            .json({message:'Books not found'})
+        }
+        res.status(200).json({
+            success:true,
+            message:"Returned books retrived successfully",
+            returnedbooks:returnedbooks,
+        })
+       
+    } catch (error) {
+        console.error('Error fetching Returned books:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+const userReturnedBooks = async(req,res)=>{
+   
+    try {
+        const userId = req.user._id;
+    
+        const returnedbooks = await BookBorrow.find({ userId, returned: true })
+        .populate('bookId','isbn title bookimage')
+        .exec();
+        const returnedbooklist = returnedbooks.map(BookBorrow =>({
+            isbn: BookBorrow.bookId.isbn,
+            title: BookBorrow.bookId.title,
+            toDate:BookBorrow.toDate,
+            fromDate:BookBorrow.fromDate,
+            returned:BookBorrow.returned,
+            fine:BookBorrow.fine,
+            bookimage:BookBorrow.bookId.bookimage,
+        }))
+        if(returnedbooklist.length == 0){
+            return res.status(404)
+            .json({message:'Books not found'})
+        }
+            res.status(200).json({
+                success:true,
+                message:"Returned books retrived successfully",
+                returnedbooklist:returnedbooklist,
+            })
+    }  catch (error) {
+        console.error('Error fetching Returned books:', error);
+        res.status(500).json({ message: 'Internal server error' });
+      
+    }
+}
+
+
+
+
 
 module.exports = { addbook , 
     showAllbooks,
@@ -352,4 +424,7 @@ module.exports = { addbook ,
     SearchBooksByIsbn,
     borrowBook,
     displayBorrowedBooks,
-    userBorrowedBooks,returnBooks};
+    userBorrowedBooks,returnBooks,
+    displayReturnedBooks,
+    userReturnedBooks
+};
