@@ -7,23 +7,47 @@ import axios from 'axios'
 function Users() {
 const [users,setUsers]= useState([]);
 const [error,setError]=useState(null);
-const [showEditPopup, setShowEditPopup] = useState(false);
-const [showDeletePopup, setShowDeletePopup] = useState(false);
-const [currentUser, setCurrentUser] = useState(null); // For editing
-const [userToDelete, setUserToDelete] = useState(null); // For deletion
-
+const [loading, setLoading] = useState(true);
+const [searchQuery,SetSearchQuery] = useState('')
+const [AllUsers,setAllUsers] = useState([]);
 
 useEffect(()=>{
   const fetchUsers = async()=>{
     try{
       const response = await axios.get('http://localhost:3000/api/alluser');
+      setAllUsers(response.data.users);
       setUsers(response.data.users);
+      setLoading(false);
     }catch(err){
         setError(err.message);
+        setLoading(false);
     }
   };
   fetchUsers();
 },[]);
+
+const handleSearch = async (e)=>{
+  const firstnameprefix = e.target.value;
+  SetSearchQuery(firstnameprefix);
+  if(firstnameprefix){
+    try {
+      const response = await axios.get(`http://localhost:3000/api/searchedUser?firstnameprefix=${firstnameprefix}`)
+      if (response.data.success && response.data.users.length >0) {
+        console.log("response from server:", response.data);
+        setUsers(response.data.users);
+        
+      } else {
+        console.error("No books found in the response:", response.data.message || '');
+        setUsers([]);
+      }
+    } catch (error) {
+      console.error("Error Fetching users:", error);
+        setUsers([]);
+    }
+  }else{
+    setUsers(AllUsers);
+  }
+}
   return (
     <>
      <>
@@ -32,7 +56,7 @@ useEffect(()=>{
           <p className='font-bold text-blue text-xl'>Users Management</p>
           <div className='flex md:flex-row flex-col gap-2'>
             
-            <input type="search" placeholder="Search by id" className='p-2 rounded-md shadow-lg text-grey' />
+            <input type="search" value={searchQuery} onChange={handleSearch}  placeholder="Search by name" className='p-2 rounded-md shadow-lg text-grey' />
           </div>
         </div>
 
@@ -42,10 +66,10 @@ useEffect(()=>{
             <p>Phone no</p>
             <p>Email</p>
             <p>Role</p>
-           
+
           </div>
           {users.length === 0 ? (
-            <p>No books available</p>
+            <p>No Users available</p>
           ) : (
             users.map((user) => (
               <div className='grid md:grid-cols-4 grid-cols-2 text-sm bg-white p-2 ' key={user._id}>
@@ -53,14 +77,11 @@ useEffect(()=>{
                 <p>{user.phone}</p>
                 <p>{user.email}</p>
                 <p>{user.role}</p>
-                
+               
               </div>
             ))
           )}
         </div>
-
-       
-
       </div>
     </>
     </>

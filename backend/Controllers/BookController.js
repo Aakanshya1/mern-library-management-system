@@ -411,6 +411,37 @@ const userReturnedBooks = async(req,res)=>{
       
     }
 }
+const displayStatus = async (req,res)=>{
+    try {
+        const totalbooks = await BookModel.countDocuments();
+        const borrowedlist = await BookBorrow.countDocuments({returned:false});
+        const returnedlist = await BookBorrow.countDocuments({returned:true});
+
+
+
+        const totalusers = await UserModel.countDocuments();
+        const admin = await UserModel.countDocuments({role:"admin"});
+        const librarian = await UserModel.countDocuments({role:"librarian"});
+        const user = await UserModel.countDocuments({role:"user"});
+
+        res.json({
+            bookStats: {
+                totalbooks ,
+                borrowedlist,
+                returnedlist,
+            },
+            userStats: {
+                totalusers,
+                admin,
+                librarian ,
+                user,
+            },
+          });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error");
+    }
+}
 
 
 
@@ -426,5 +457,6 @@ module.exports = { addbook ,
     displayBorrowedBooks,
     userBorrowedBooks,returnBooks,
     displayReturnedBooks,
-    userReturnedBooks
+    userReturnedBooks,
+    displayStatus
 };
