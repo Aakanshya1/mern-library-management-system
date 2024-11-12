@@ -72,12 +72,12 @@ function Dashboardadmin() {
 
   return (
     <>
-      {/* Sidebar and Top Bar remain visible */}
-      <div className="flex w-full md:flex-row flex-col-reverse h-fixed md:h-screen">
-        {/* Sidebar */}
+     
+      <div className="flex w-full md:flex-row flex-col-reverse h-fit md:h-screen ">
+
         <div className="flex flex-[0.2] md:h-screen h-fit md:flex-col gap-10 items-center  w-full drop-shadow-2xl fixed md:relative md:left-0 bottom-0 z-10 bg-white ">
           <img src={logo} className="w-[120px] md:inline-block hidden m-4" alt="Logo" />
-          <ul className="md:text-sm text-xl text-grey flex md:flex-col flex-row justify-around w-full md:gap-3 gap-8 md:p-2 p-4 ">
+          <ul className="md:text-sm text-xl text-grey flex md:flex-col flex-row justify-around w-full md:gap-3 gap-4 md:p-2 py-2 ">
             <li className=' p-2 hover:bg-bgcolor hover:shadow-xl rounded-md' >
               <Link to="/admindashboard"  className="flex gap-2 cursor-pointer">   <IoHomeSharp /> <span className="md:inline-block hidden">Home</span></Link>
             </li>
@@ -103,7 +103,7 @@ function Dashboardadmin() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-[0.9] flex flex-col gap-6 p-4 bg-bgcolor md:overflow-y-auto">
+        <div className="flex-[0.9] flex flex-col gap-6 p-4 bg-bgcolor md:overflow-y-auto ">
           {/* Top Bar */}
           <div className="bg-white p-2 rounded-full shadow-sm gap-60 justify-between md:flex flex-row hidden">
             <div className="flex flex-row w-full justify-around">
