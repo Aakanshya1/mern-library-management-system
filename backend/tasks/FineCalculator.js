@@ -1,9 +1,10 @@
-const cron = require('node-cron');
+// calculateFines.js
 const BookBorrow = require('../Models/Borrow'); // Adjust path as needed
 const User = require('../Models/Userdata'); // Adjust path as needed
 
 // Function to calculate fines for overdue books
-const calculateFines = async () => {
+const FineCalculator = async () => {
+  console.log("Cron job started for calculating fines.");
   try {
     const overdueBooks = await BookBorrow.find({
       toDate: { $lt: new Date() },
@@ -19,7 +20,7 @@ const calculateFines = async () => {
       await book.save();
 
       const user = book.userId;
-      user.totalFine += fine; 
+      user.totalFine += fine;
       await user.save();
 
       console.log(`Calculated fine for user ${user._id}: $${fine}`);
@@ -29,5 +30,4 @@ const calculateFines = async () => {
   }
 };
 
-// Schedule the cron job to run daily at midnight
-cron.schedule('0 0 * * *', calculateFines);
+module.exports = FineCalculator;

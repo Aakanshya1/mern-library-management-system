@@ -12,7 +12,7 @@ const {addbook,
        displayBorrowedBooks,
         userBorrowedBooks,
         returnBooks
-    , displayReturnedBooks,userReturnedBooks,displayStatus} = require('../Controllers/BookController');
+    , displayReturnedBooks,userReturnedBooks,displayStatus, overduebooks} = require('../Controllers/BookController');
 
 
 router.post('/addbook',upload.single('bookimage'),addbook);
@@ -28,5 +28,6 @@ router.post('/returnbooks',ensureAuthenticated,returnBooks)
 router.get('/showreturnedbooks',displayReturnedBooks)
 router.get('/userreturnedbooks',ensureAuthenticated,userReturnedBooks)
 router.get('/status',displayStatus)
+router.get('/overduebooks', overduebooks)
 
 module.exports= router;

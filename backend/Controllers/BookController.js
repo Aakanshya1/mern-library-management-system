@@ -442,7 +442,22 @@ const displayStatus = async (req,res)=>{
         res.status(500).send("Server Error");
     }
 }
-
+const overduebooks= async (req,res)=>{
+    try {
+        const overdueBooks = await BookBorrow.find({
+          toDate: { $lt: new Date() },
+          returned: false
+        }).populate('userId', 'name totalFine'); // Adjust fields as needed
+    
+        res.status(200).json({
+          message: 'Overdue books retrieved successfully',
+          overdueBooks: overdueBooks
+        });
+      } catch (error) {
+        console.error('Error retrieving overdue books:', error);
+        res.status(500).json({ message: 'Failed to retrieve overdue books', error });
+      }
+}
 
 
 
@@ -458,5 +473,6 @@ module.exports = { addbook ,
     userBorrowedBooks,returnBooks,
     displayReturnedBooks,
     userReturnedBooks,
-    displayStatus
+    displayStatus,
+    overduebooks
 };
