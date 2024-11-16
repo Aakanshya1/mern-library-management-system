@@ -48,7 +48,7 @@ const handleReturnClick = (book) => {
           <p className='flex flex-col'><span className='text-black  font-bold'>Borrowed On:</span>{new Date(borrowedbooks.fromDate).toLocaleDateString()}</p>
           <p className='flex flex-col'><span className='text-black  font-bold'>Submission:</span>{new Date(borrowedbooks.toDate).toLocaleDateString()}</p>
           <p className='flex flex-col'><span className='text-black  font-bold'>Status:</span>{borrowedbooks.returned ? "Returned" : "Borrowed"}</p>
-          <p className='flex flex-col'><span className='text-black  font-bold'>Total Fine:</span>{borrowedbooks.fine}</p>
+          <p className='flex flex-col'><span className='text-black  font-bold'>Total Fine:</span>Rs. {borrowedbooks.fine}</p>
           <button onClick={() => handleReturnClick(borrowedbooks)} className=' py-2 border bg-blue rounded-md text-white uppercase hover:bg-white hover:text-blue hover:border'>Return</button>
           </div>
          

@@ -65,7 +65,7 @@ const ReturnBook = ({ showReturnPopup, setShowReturnPopup, bookToReturn, setBorr
         <p><span className="font-bold">ISBN:</span> {bookToReturn.isbn}</p>
         <p><span className="font-bold">Borrowed On:</span> {new Date(bookToReturn.fromDate).toLocaleDateString()}</p>
         <p><span className="font-bold">Submission Date:</span> {new Date(bookToReturn.toDate).toLocaleDateString()}</p>
-        <p><span className="font-bold">Total Fine:</span> {bookToReturn.fine > 0 ? `$${bookToReturn.fine}` : "No fine"}</p>
+        <p><span className="font-bold">Total Fine:</span> {bookToReturn.fine > 0 ? `Rs${bookToReturn.fine}` : "No fine"}</p>
 
         <div className="flex justify-center gap-4 mt-6">
           <button

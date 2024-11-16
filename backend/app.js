@@ -12,6 +12,7 @@ const BooksRouter = require('./routes/BooksRouter')
 const FineCalculator = require('./tasks/FineCalculator')
 app.use(bodyParser.json());
 const cron = require('node-cron');
+const calculateFines = require("./tasks/FineCalculator");
 
 app.use(cors());
 
@@ -22,7 +23,8 @@ app.use('/api', DashboardRouter);
 
 app.use('/books',BooksRouter);
 
-cron.schedule('0 0 * * *',() =>FineCalculator());
+
+calculateFines();
 
 app.listen(process.env.PORT,()=>{
     console.log(`Server running on port ${process.env.PORT}`);

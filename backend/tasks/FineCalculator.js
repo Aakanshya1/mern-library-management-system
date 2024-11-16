@@ -1,33 +1,48 @@
-// calculateFines.js
+const cron = require('node-cron');
 const BookBorrow = require('../Models/Borrow'); // Adjust path as needed
 const User = require('../Models/Userdata'); // Adjust path as needed
 
-// Function to calculate fines for overdue books
-const FineCalculator = async () => {
+const calculateFines = async () => {
   console.log("Cron job started for calculating fines.");
   try {
     const overdueBooks = await BookBorrow.find({
       toDate: { $lt: new Date() },
-      returned: false
-    }).populate('userId');
+      returned: false,
+    }).populate("userId");
 
-    const finePerDay = 5; // Example fine rate per day
+    const finePerDay = 5; // Fine rate
 
     for (const book of overdueBooks) {
-      const overdueDays = Math.ceil((new Date() - book.toDate) / (1000 * 60 * 60 * 24));
+      // Ensure fineStartDate is set
+      if (!book.fineStartDate) {
+        book.fineStartDate = new Date(book.toDate);
+      }
+
+      // Calculate overdue days
+      const overdueDays = Math.floor(
+        (new Date() - book.fineStartDate) / (1000 * 60 * 60 * 24)
+      );
       const fine = overdueDays * finePerDay;
+
+      console.log(`Book: ${book._id}, Overdue Days: ${overdueDays}, Fine: ${fine}`);
+
+      // Update book and user records
       book.fine = fine;
       await book.save();
 
       const user = book.userId;
-      user.totalFine += fine;
+      user.totalFine = fine; // Avoid incrementing; set directly
       await user.save();
 
-      console.log(`Calculated fine for user ${user._id}: $${fine}`);
+      console.log(`User ${user._id}, Total Fine Updated: ${user.totalFine}`);
     }
   } catch (error) {
-    console.error('Error calculating fines:', error);
+    console.error("Error calculating fines:", error);
   }
 };
 
-module.exports = FineCalculator;
+
+module.exports = calculateFines;
+
+cron.schedule('0 0 * * *', () => calculateFines());
+
