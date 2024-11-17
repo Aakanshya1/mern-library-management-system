@@ -26,7 +26,7 @@ function Returned() {
    
   
     return (
-  <div className="flex flex-row text-left gap-8  rounded-md  w-fit">
+  <div className="grid grid-cols-4 text-left gap-8  rounded-md  w-fit">
     
     
     {returnedbooklist.length === 0 ? (

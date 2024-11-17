@@ -11,7 +11,7 @@ const AddBook = ({ showAddPopup, setShowAddPopup }) => {
     description: '',
     author:'',
     bookCount:'',
-    bookStatus:'',
+    bookStatus:'Available',
     bookimage: null,
   });
 
@@ -40,6 +40,16 @@ const AddBook = ({ showAddPopup, setShowAddPopup }) => {
     form.append('bookimage', formData.bookimage);
     form.append('bookCount', formData.bookCount);
     form.append('bookStatus', formData.bookStatus);
+    console.log({
+      isbn: formData.isbn,
+      title: formData.title,
+      category: formData.category,
+      description: formData.description,
+      author: formData.author,
+      bookCount: formData.bookCount,
+      bookStatus: formData.bookStatus,
+      bookimage: formData.bookimage,
+    });
 
     try {
       await axios.post('http://localhost:3000/books/addbook', form, {

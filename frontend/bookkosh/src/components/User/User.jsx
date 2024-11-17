@@ -122,7 +122,7 @@ const User = () => {
             </div>
             <div className='items-center flex flex-col justify-center'>
               <span className='md:text-2xl text-xl'><FaStar /></span>
-              <p>{userData.borrowedpoints}</p>
+              <p>{userData.totalPoints}</p>
               <p className='md:text-sm text-xs'>Points Earned</p>
             </div>
             <div className='items-center flex flex-col justify-center'>

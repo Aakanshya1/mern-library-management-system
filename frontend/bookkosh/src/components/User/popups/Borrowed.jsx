@@ -16,6 +16,7 @@ function Borrowed() {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         });
+     
         setBorrowedBookList(response.data.borrowedbooklist);
         setLoading(false);
       } catch (error) {
@@ -25,13 +26,14 @@ function Borrowed() {
     };fetchBooks();
    },[])
 
-const handleReturnClick = (book) => {
-  setBookToReturn(book);
+const handleReturnClick = (borrowed) => {
+  console.log('Book selected for return:', borrowed._id); 
+  setBookToReturn(borrowed);
   setShowReturnPopup(true);
 };
   
     return (
-  <div className="flex flex-row text-left gap-8  rounded-md  w-fit">
+  <div className="grid grid-cols-4 text-left gap-8  rounded-md  w-fit">
     
     
     {borrowedbooklist.length === 0 ? (
