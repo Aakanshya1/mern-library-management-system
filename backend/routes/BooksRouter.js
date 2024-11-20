@@ -13,7 +13,9 @@ const {addbook,
         userBorrowedBooks,
         returnBooks
     , displayReturnedBooks,userReturnedBooks,displayStatus, overduebooks,
-    contribution,displayContribution} = require('../Controllers/BookController');
+    contribution,displayContribution,reserveBook
+,displayReservedBooks, 
+userReservedBooks} = require('../Controllers/BookController');
 
 
 router.post('/addbook',upload.single('bookimage'),addbook);
@@ -32,5 +34,8 @@ router.get('/status',displayStatus)
 router.get('/overduebooks', overduebooks)
 router.post('/contribution',ensureAuthenticated,contribution);
 router.get('/contribution-list',displayContribution);
+router.post('/reservation/:_id',ensureAuthenticated,reserveBook );
+router.get('/reservedbooks',displayReservedBooks)
+router.get('/userreservedbooks',ensureAuthenticated,userReservedBooks);
 
 module.exports= router;

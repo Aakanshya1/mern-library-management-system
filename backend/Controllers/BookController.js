@@ -6,6 +6,8 @@ const { binarySearchBooks } = require('../utils/Searchbook');
 const BookBorrow = require ('../Models/Borrow');
 const UserModel = require('../Models/Userdata');
 const ContributionModel = require('../Models/Contribution');
+const Reservation = require('../Models/Reserve');
+
 const addbook= async(req,res)=>{
     try{
         const{isbn,title,category,description,author,bookCount,bookimage,bookStatus}=req.body;
@@ -529,7 +531,136 @@ const displayContribution= async(req,res)=>{
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+const reserveBook = async (req, res) => {
+    const { bookId } = req.body;
+    console.log(bookId);
+    try {
+      
+        const userId = req.user._id;  
 
+
+        const book = await BookModel.findById(bookId);
+        if(!book){
+            return res.status(400).json({ message: 'Book not found' });
+        }
+        if (book.bookCount > 0) {
+            return res.status(400).json({ message: 'Book is available' });
+        }
+
+
+        const user = await UserModel.findById(userId);
+        if (!user) {
+            return res.status(400).json({ message: 'User not found' });
+        }
+
+        // Create a reservation
+        const reservation = new Reservation({
+            userId,
+            bookId,
+            status: 'reserved',
+            reservedAt: Date.now(),
+        });
+
+        await reservation.save();
+        return res.status(200).json({
+            message: 'Book reserved successfully',
+            reservation
+        });
+    } catch (error) {
+        console.error('Error reserving book:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+const processQueue = async (bookId) => {
+    try {
+        // Find the next reservation based on totalPoints
+        const reservations = await Reservation.find({ bookId, status: 'reserved' })
+            .populate('userId', 'totalPoints')  // Populate user with totalPoints
+            .sort('-userId.totalPoints')  // Sort by descending totalPoints
+            .exec();
+
+        if (reservations.length === 0) {
+            console.log('No reservations for this book.');
+            return;
+        }
+
+        const topReservation = reservations[0];
+
+        // Check if the top reservation is still valid and available to borrow
+        const book = await Book.findById(bookId);
+        if (book && book.availableCopies > 0) {
+            // Assign the book to the user with highest points
+            topReservation.status = 'borrowed';
+            await topReservation.save();
+
+            // Deduct a copy of the book from inventory
+            book.availableCopies -= 1;
+            await book.save();
+
+            console.log(`Book assigned to user: ${topReservation.userId.username}`);
+        }
+    } catch (error) {
+        console.error('Error processing reservation queue:', error);
+    }
+};
+const displayReservedBooks = async(req,res)=>{
+    try{
+        const reservedbook = await Reservation.find()
+        .populate('bookId','isbn title')
+        .populate('userId','firstname lastname email')
+        .exec();
+        const reservationbooks = reservedbook.map(Reservation=>({
+            isbn:Reservation.bookId.isbn,
+            title:Reservation.bookId.title,
+            userId:Reservation.userId.userId,
+            firstname:Reservation.userId.firstname,
+            lastname:Reservation.userId.lastname,
+            reservedAt:Reservation.reservedAt,
+            status:Reservation.status
+        }))
+        if(reservationbooks.length==0){
+            return res.status(404)
+            .json({message:'Books not found'})
+        }
+        res.status(200).json({
+            success:true,
+            message:"Borrowed books retrived successfully",
+            reservationbooks:reservationbooks,
+        })
+    }catch(error){
+        console.error('Error fetching reserved books:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+const userReservedBooks = async(req,res)=>{
+    try {
+        const userId = req.user._id;
+        const reservedbooks = await Reservation.find({userId})
+        .populate('bookId','isbn title bookimage')
+        .exec()
+        const reservedbooklist = reservedbooks.map(Reservation =>({
+            _id: Reservation._id, 
+            isbn: Reservation.bookId.isbn,
+            title: Reservation.bookId.title,
+            reservedAt:Reservation.reservedAt,
+            bookimage:Reservation.bookId.bookimage,
+            status:Reservation.status
+        }))
+        if(reservedbooklist .length == 0){
+            return res.status(404)
+            .json({message:'Books not found'})
+        }
+            res.status(200).json({
+                success:true,
+                message:"Borrowed books retrived successfully",
+                reservedbooklist :reservedbooklist ,
+            })
+    } catch (error) {
+        console.error('Error fetching reserved books:', error);
+        res.status(500).json({ message: 'Internal server error' });
+        
+    }
+}
 
 module.exports = { addbook , 
     showAllbooks,
@@ -544,5 +675,7 @@ module.exports = { addbook ,
     userReturnedBooks,
     displayStatus,
     overduebooks,
-    contribution,displayContribution
+    contribution,displayContribution,reserveBook,
+    processQueue, displayReservedBooks,userReservedBooks
+    
 };

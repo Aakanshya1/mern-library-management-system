@@ -4,22 +4,39 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 
 const BookReserve = ({ showReservePopup, setShowReservePopup, currentBook }) => {
-  
   const handleReserve = async () => {
-    // Create a request payload for reservation
-    const reserveData = {
-      isbn: currentBook.isbn,
-      title: currentBook.title,
-    };
+    try {
+      // Construct ReserveData dynamically based on currentBook
+      const reserveData = {
+        bookId: currentBook._id,
+      };
 
-    // try {
-    //   await axios.post(`http://localhost:3000/books/reserve/${currentBook._id}`, reserveData);
-    //   toast.success('Book reserved successfully');
-    //   setShowReservePopup(false);
-    // } catch (error) {
-    //   console.error('Error reserving book:', error);
-    //   toast.error('Failed to reserve the book');
-    // }
+      // Send POST request to backend for book reservation
+      const response = await axios.post(
+        `http://localhost:3000/books/reservation/${currentBook._id}`,
+        reserveData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`, // Attach user token
+          },
+        }
+      );
+   
+        
+        toast.success("Book reserved successfully");
+  
+      
+        setTimeout(() => {
+          setShowReservePopup(false);
+        }, 4000); 
+     
+    
+    } catch (error) {
+      console.error('Error reserving book:', error);
+      toast.error(
+        error.response?.data?.message || 'Failed to reserve the book'
+      );
+    }
   };
 
   return (

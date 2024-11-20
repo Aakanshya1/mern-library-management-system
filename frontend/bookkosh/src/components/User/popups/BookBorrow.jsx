@@ -35,12 +35,18 @@ const BookBorrow = ({ showBorrowPopup, setShowBorrowPopup, currentBook, updateBo
                     Authorization: `Bearer ${localStorage.getItem('token')}` // Assuming you're using token-based authentication
                 }
             });
-            if (response.status === 201) {
-                toast.success('Book borrowed successfully');
+        
+         
+             
+                toast.success("Book Borrowed successfully");
+          
                 setTimeout(() => {
-                  setShowBorrowPopup(false);
-                }, 500); 
-            }
+                    setShowBorrowPopup(false);
+                }, 4000); 
+           
+           
+           
+         
         } catch (error) {
             console.error('Error borrowing book:', error);
             toast.error('Failed to borrow the book');

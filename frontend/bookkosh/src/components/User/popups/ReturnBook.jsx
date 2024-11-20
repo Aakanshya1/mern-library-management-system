@@ -40,10 +40,13 @@ const ReturnBook = ({ showReturnPopup, setShowReturnPopup, bookToReturn, setBorr
       }
     );
 
-    // Notify success
-    toast.success(response.data.message);
+  toast.success("Book returned successfully");
+  setTimeout(() => {
+    setShowReturnPopup(false);
+  }, 4000); 
 
-    // Update the borrowed books list
+   
+
     const updatedBooksResponse = await axios.get(
       'http://localhost:3000/books/userborrowedbooks',
       {
@@ -52,8 +55,8 @@ const ReturnBook = ({ showReturnPopup, setShowReturnPopup, bookToReturn, setBorr
     );
     setBorrowedBookList(updatedBooksResponse.data.borrowedbooklist);
 
-    // Close the popup
-    setShowReturnPopup(false);
+    
+    
   } catch (error) {
     // Handle errors
     if (error.response) {
