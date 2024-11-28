@@ -40,8 +40,13 @@ const UserSchema = new mongoose.Schema({
     totalPoints: {
         type: Number,
      default: 0 
-    }
-    
+    },
+    notifications: [
+        {
+          message: { type: String },
+          date: { type: Date },
+        },
+      ],
 },
 );
 const UserModel = mongoose.model("User",UserSchema);

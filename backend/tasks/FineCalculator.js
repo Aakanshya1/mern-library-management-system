@@ -24,7 +24,7 @@ const calculateFines = async () => {
       );
       const fine = overdueDays * finePerDay;
 
-      console.log(`Book: ${book._id}, Overdue Days: ${overdueDays}, Fine: ${fine}`);
+     
 
       // Update book and user records
       book.fine = fine;
@@ -44,5 +44,5 @@ const calculateFines = async () => {
 
 module.exports = calculateFines;
 
-cron.schedule('0 0 * * *', () => calculateFines());
+
 

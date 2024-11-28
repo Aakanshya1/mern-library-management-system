@@ -16,7 +16,7 @@ const ReservationSchema = new mongoose.Schema({
          default: Date.now
         },
         status: { type: String,
-             enum: ['reserved','borrowed' ,'cancelled'],
+             enum: ['reserved','notified' ,'cancelled'],
               default: 'reserved' },
 
   });

@@ -7,6 +7,12 @@ const BookBorrow = require ('../Models/Borrow');
 const UserModel = require('../Models/Userdata');
 const ContributionModel = require('../Models/Contribution');
 const Reservation = require('../Models/Reserve');
+const {sendOverdueEmail} = require('../utils/EmailService')
+const cron = require('node-cron');
+const Notification = require('../Models/Notifications');
+const {sendAvailableBookEmail}= require('../utils/EmailService')
+
+
 
 const addbook= async(req,res)=>{
     try{
@@ -213,8 +219,7 @@ const borrowBook = async (req, res)=>{
     try {
        const userId = req.user._id;
         const user = await UserModel.findById(userId);
-        console.log(userId);
-        console.log(bookId);
+      
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -315,8 +320,7 @@ const userBorrowedBooks = async(req,res)=>{
 }
 const returnBooks = async (req, res) => {
     try {
-        console.log('Request Body:', req.body);
-        console.log('User ID:', req.user?._id);
+      
 
         const userId = req.user._id;
         const { borrowId } = req.body;
@@ -573,34 +577,102 @@ const reserveBook = async (req, res) => {
 };
 const processQueue = async (bookId) => {
     try {
-        // Find the next reservation based on totalPoints
-        const reservations = await Reservation.find({ bookId, status: 'reserved' })
-            .populate('userId', 'totalPoints')  // Populate user with totalPoints
-            .sort('-userId.totalPoints')  // Sort by descending totalPoints
-            .exec();
+        console.log("Checking reserved books for availability...");
 
-        if (reservations.length === 0) {
-            console.log('No reservations for this book.');
+        // Step 1: Find all books that are reserved
+        const reservedBooks = await Reservation.find({ status: 'reserved' })
+            .populate('bookId', 'title author bookCount') // Include book details
+            .populate('userId', 'firstname email totalPoints notifications lastNotified'); // Include user details
+        
+        if (!reservedBooks.length) {
+            console.log("No reserved books found.");
             return;
         }
 
-        const topReservation = reservations[0];
+        console.log("Reserved books data:", reservedBooks);
 
-        // Check if the top reservation is still valid and available to borrow
-        const book = await Book.findById(bookId);
-        if (book && book.availableCopies > 0) {
-            // Assign the book to the user with highest points
-            topReservation.status = 'borrowed';
-            await topReservation.save();
+        // Step 2: Loop through each reserved book and check availability
+        for (const reservation of reservedBooks) {
+            const book = reservation.bookId; // Get the book details from reservation
+            const user = reservation.userId; // Get the user details from reservation
+            
+            if (book && book.bookCount > 0 && user) {
+                console.log(`Processing reservation for book: "${book.title}"`);
 
-            // Deduct a copy of the book from inventory
-            book.availableCopies -= 1;
-            await book.save();
+                // Ensure bookId and userId are correctly populated and accessible
+                console.log(`Book ID: ${book._id}`);
+                console.log(`User ID: ${user._id}`);
 
-            console.log(`Book assigned to user: ${topReservation.userId.username}`);
+                // Filter and sort the reservations for this book
+                const sortedReservations = reservedBooks
+                    .filter(r => r.bookId && r.bookId._id.equals(book._id))  // Use `.equals` for MongoDB ObjectId comparison
+                    .sort((a, b) => b.userId.totalPoints - a.userId.totalPoints); // Sort by totalPoints
+
+                console.log(`Sorted reservations for book "${book.title}":`, sortedReservations);
+
+                if (sortedReservations.length === 0) {
+                    console.log(`No reservations found for book: "${book.title}"`);
+                    continue;  // Skip to the next book if no reservations for this book
+                }
+
+                // Get the highest point user reservation
+                const highestPointUserReservation = sortedReservations[0];
+                console.log(`Highest point user: ${highestPointUserReservation.userId.firstname} with points: ${highestPointUserReservation.userId.totalPoints}`);
+
+                const lastNotifiedTime = highestPointUserReservation.lastNotified;
+                const currentTime = new Date();
+
+                if (!lastNotifiedTime || currentTime - new Date(lastNotifiedTime) >= 24 * 60 * 60 * 1000) {
+                    // If 24 hours have passed or it has never been notified, send the notification
+
+                    // Create a notification in the database
+                    const notificationMessage = `The book "${book.title}" is now available. You can borrow it.`;
+                    const date = new Date();
+
+                    const notification = new Notification({
+                        userId: highestPointUserReservation.userId._id,
+                        message: notificationMessage,
+                        createdAt: date,
+                    });
+
+                    await notification.save(); // Save notification to DB
+
+                    // Add the notification to the user's notifications array
+                    highestPointUserReservation.userId.notifications = highestPointUserReservation.userId.notifications || [];
+                    highestPointUserReservation.userId.notifications.push(notification);
+                    await highestPointUserReservation.userId.save();
+
+                    console.log(`Notification sent for available book "${book.title}" to user "${highestPointUserReservation.userId.firstname}"`);
+
+                    // Send email notification (optional)
+                    const bookDetails = { title: book.title, author: book.author };
+                    await sendAvailableBookEmail(highestPointUserReservation.userId.email, highestPointUserReservation.userId.firstname, bookDetails);
+
+                    // Update reservation status to 'notified' and set the lastNotified time
+                    highestPointUserReservation.status = 'notified';
+                    highestPointUserReservation.lastNotified = date;
+                    await highestPointUserReservation.save();
+                } else {
+                    console.log(`User with the highest points has already been notified within the last 24 hours.`);
+                }
+
+                // Step 3: If the book is borrowed, update the reservation status and book inventory
+                if (book.bookCount > 0 && highestPointUserReservation.status === 'notified') {
+                    highestPointUserReservation.status = 'notified';
+                    await highestPointUserReservation.save();
+
+                    // Update book inventory
+                    book.bookCount -= 1;
+                    await book.save();
+
+                    console.log(`Book "${book.title}" assigned to user "${highestPointUserReservation.userId.firstname}"`);
+                } else {
+                    console.log(`Book "${book.title}" is not available for reservation or the user has not been notified.`);
+                }
+            }
         }
     } catch (error) {
-        console.error('Error processing reservation queue:', error);
+        console.error('Error processing reserved books:', error);
     }
 };
 const displayReservedBooks = async(req,res)=>{
@@ -662,6 +734,65 @@ const userReservedBooks = async(req,res)=>{
     }
 }
 
+
+  const fetchNotifications = async (req, res) => {
+    try {
+      const userId = req.user._id;  // This is from the authentication middleware
+  
+      // Fetch notifications for the specific user using the 'userId' field
+      const notifications = await Notification.find({ userId })
+      .sort({ createdAt: -1 }); // Sorting by createdAt to get the latest notifications first
+  
+      if (!notifications) {
+        return res.status(404).json({ message: 'No notifications found' });
+      }
+  
+      // Return the notifications in the response
+      res.status(200).json(notifications || []);  // Return notifications, or an empty array if none
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+  
+const markNotification = async(req,res)=>{
+    try {
+        const notificationId = req.body._id;
+        const updatedNotification = await Notification.findByIdAndUpdate(
+          notificationId, 
+          { read: true }, // Set 'read' to true
+          { new: true } // Return the updated document
+        );
+    
+        if (!updatedNotification) {
+          return res.status(404).json({ message: "Notification not found" });
+        }
+    
+        res.json({ message: "Notification marked as read" });
+      } catch (error) {
+        res.status(500).json({ message: error.message });
+      }
+}
+const getAllUserNotifications = async () => {
+    try {
+      // Fetch all users from the database and include their notifications
+      const users = await UserModel.find({});  // Get all users
+      let allNotifications = [];
+  
+      // Loop through each user and push their notifications
+      users.forEach(user => {
+        if (user.notifications && user.notifications.length > 0) {
+          allNotifications.push(...user.notifications);  // Add user's notifications to the list
+        }
+      });
+  
+      return allNotifications;
+    } catch (error) {
+      throw new Error('Error fetching all notifications: ' + error.message);
+    }
+  };
+  
+
 module.exports = { addbook , 
     showAllbooks,
     updateBook,
@@ -676,6 +807,6 @@ module.exports = { addbook ,
     displayStatus,
     overduebooks,
     contribution,displayContribution,reserveBook,
-    processQueue, displayReservedBooks,userReservedBooks
-    
+    processQueue, displayReservedBooks,userReservedBooks,fetchNotifications
+    ,markNotification,getAllUserNotifications 
 };

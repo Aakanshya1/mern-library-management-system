@@ -15,7 +15,9 @@ const {addbook,
     , displayReturnedBooks,userReturnedBooks,displayStatus, overduebooks,
     contribution,displayContribution,reserveBook
 ,displayReservedBooks, 
-userReservedBooks} = require('../Controllers/BookController');
+userReservedBooks,fetchNotifications
+,markNotification,checkOverdueBooksAndNotify,getAllUserNotifications } = require('../Controllers/BookController');
+const { checkAvailableBooksAndNotify } = require('../tasks/Notify');
 
 
 router.post('/addbook',upload.single('bookimage'),addbook);
@@ -37,5 +39,32 @@ router.get('/contribution-list',displayContribution);
 router.post('/reservation/:_id',ensureAuthenticated,reserveBook );
 router.get('/reservedbooks',displayReservedBooks)
 router.get('/userreservedbooks',ensureAuthenticated,userReservedBooks);
+router.get('/notifications',ensureAuthenticated,fetchNotifications );
+router.post('/marked-read-notifications',markNotification);
 
+
+router.get('/check-overdue-books', async (req, res) => {
+    try {
+      await checkOverdueBooksAndNotify();
+      res.status(200).json({ message: 'Overdue books checked and notifications sent successfully!' });
+    } catch (error) {
+      res.status(500).json({ message: 'Error checking overdue books or sending notifications', error: error.message });
+    }
+  });
+  router.get('/notification', async (req, res) => {
+    try {
+      const allNotifications = await getAllUserNotifications();
+      res.status(200).json({ notifications: allNotifications });
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching notifications', error: error.message });
+    }
+  });
+  router.get('/available-books', async (req, res) => {
+    try {
+      await checkAvailableBooksAndNotify();
+      res.status(200).json({ message: 'available books checked and notifications sent successfully!' });
+    } catch (error) {
+      res.status(500).json({ message: 'Error checking available books or sending notifications', error: error.message });
+    }
+});
 module.exports= router;

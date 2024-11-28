@@ -36,7 +36,7 @@ function Reserved() {
   
   
   {reservedbooklist.length === 0 ? (
-    <p className="text-center mt-4">No borrowed books</p>
+    <p className="text-center mt-4">No Reserved books</p>
   ) : (
     reservedbooklist.map((reservedbooks) => (
       <div key={reservedbooks._id} className="flex text-sm text-grey flex-row gap-2 shadow-2xl p-4 bg-white ">

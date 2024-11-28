@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, Route, Routes } from 'react-router-dom';
 import { IoHomeSharp, IoSearch, IoBagHandle } from 'react-icons/io5';
+import { IoIosNotifications } from "react-icons/io";
 import { GiBookshelf } from 'react-icons/gi';
 import { FaUser, FaCalendarAlt } from 'react-icons/fa';
 import { IoMdTime } from "react-icons/io";
@@ -15,12 +16,14 @@ import Search from '../../components/User/Search';
 import Myshelf from '../../components/User/Myshelf';
 import Contribution from '../../components/User/Contribution';
 import User from '../../components/User/User';
-
+import Notification from '../../components/User/Notification';
 export default function Dashboard() {
   const [loggedInUser, setLoggedInUser] = useState('');
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [avatarPreview, setAvatarPreview] = useState('');
   const [error, setError] = useState(null);
+  const [notifications, setNotifications] = useState([]); // Store notifications
+  const [showDropdown, setShowDropdown] = useState(false); // Toggle for dropdown
 
   useEffect(() => {
     const fetchAvatar = async () => {
@@ -70,6 +73,10 @@ export default function Dashboard() {
   const formattedDate = currentDateTime.toLocaleDateString();
   const formattedTime = currentDateTime.toLocaleTimeString();
 
+  
+  const toggleDropdown = () => {
+    setShowDropdown((prev) => !prev);
+  };
   return (
     <>
       <div className="flex w-full md:flex-row flex-col-reverse h-fixed md:h-screen ">
@@ -120,18 +127,29 @@ export default function Dashboard() {
               <p className="text-lg flex items-center gap-2 "><span className='text-blue text-2xl'><FaCalendarAlt /></span>{formattedDate} </p>
               <p className="text-lg flex items-center gap-2"><span className='text-blue text-2xl'><IoMdTime /></span>{formattedTime}</p>
             </div>
-
-            <div className='flex flex-row gap-6 rounded-full justify-center items-center p-1 hover:bg-bgcolor cursor-pointer'>
-              <div className='rounded-full w-[40px] h-[40px]'>
-                <img
-                  src={avatarPreview || ''} // Replace with your default avatar path
-                  alt="Avatar"
-                  className="w-[40px] h-[40px] rounded-full "
-                />
-              </div>
-              <p className='uppercase text-sm'>{loggedInUser}</p>
+            <div className='flex flex-row text-center justify-center align-middle'>
+            <div className='p-2'>
+             
+             <span className="text-4xl text-blue" onClick={toggleDropdown}>
+         <IoIosNotifications />
+       </span>
+             </div>
+           <div className='flex flex-row gap-6 rounded-full justify-center items-center p-1 hover:bg-bgcolor cursor-pointer'>
+           
+             <div className='rounded-full w-[40px] h-[40px] flex'>
+               
+               <img
+                 src={avatarPreview || ''} // Replace with your default avatar path
+                 alt="Avatar"
+                 className="w-[40px] h-[40px] rounded-full "
+               />
+             </div>
+             <p className='uppercase text-sm'>{loggedInUser}</p>
+           </div>
             </div>
+          
           </div>
+       
           {/* Define Routes for Each Page */}
           <Routes>
             <Route path="/" element={<UserDashboard />} />
@@ -141,6 +159,14 @@ export default function Dashboard() {
             <Route path="/user-user" element={<User />} />
           </Routes>
         </div>
+    
+{showDropdown && (
+  <div className="absolute top-12 right-10 w-82  bg-white shadow-lg rounded-md p-4 z-10">
+    <Notification />
+  </div>
+)}
+
+
       </div>
       <ToastContainer />
     </>
