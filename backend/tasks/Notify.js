@@ -56,51 +56,51 @@ const checkOverdueBooksAndNotify = async () => {
       console.error('Error checking overdue books:', error);
     }
   };
-  const checkAvailableBooksAndNotify = async () => {
-    try {
-        console.log("Checking available books for reservations...");
-        const reservations = await Reservation.find({ status: 'reserved' })
-            .populate('bookId', 'title author bookCount')
-            .populate('userId', 'firstname email');
-        console.log(reservations)
-        for (const reservation of reservations) {
-            const book = reservation.bookId;
-            const user = reservation.userId;
+//   const checkAvailableBooksAndNotify = async () => {
+//     try {
+//         console.log("Checking available books for reservations...");
+//         const reservations = await Reservation.find({ status: 'reserved' })
+//             .populate('bookId', 'title author bookCount')
+//             .populate('userId', 'firstname email');
+//         console.log(reservations)
+//         for (const reservation of reservations) {
+//             const book = reservation.bookId;
+//             const user = reservation.userId;
 
-            if (book && book.bookCount > 0 && user) {
-                // Notify via database
-                const notificationMessage = `The book "${book.title}" is now available. You can borrow it.`;
-                const date = new Date(); 
-                const notification = new Notification({
-                    userId: user._id,
-                    message: notificationMessage,
-                    createdAt:  date,
-                });
-                await notification.save();
+//             if (book && book.bookCount > 0 && user) {
+//                 // Notify via database
+//                 const notificationMessage = `The book "${book.title}" is now available. You can borrow it.`;
+//                 const date = new Date(); 
+//                 const notification = new Notification({
+//                     userId: user._id,
+//                     message: notificationMessage,
+//                     createdAt:  date,
+//                 });
+//                 await notification.save();
 
-                user.notifications = user.notifications || [];
-                user.notifications.push(notification);
-                await user.save();
+//                 user.notifications = user.notifications || [];
+//                 user.notifications.push(notification);
+//                 await user.save();
 
-                // Notify via email
-                const bookDetails = {
-                    title: book.title,
-                    author: book.author,
-                };
-                await sendAvailableBookEmail(user.email, user.firstname, bookDetails);
+//                 // Notify via email
+//                 const bookDetails = {
+//                     title: book.title,
+//                     author: book.author,
+//                 };
+//                 await sendAvailableBookEmail(user.email, user.firstname, bookDetails);
 
            
-                reservation.status = 'notified';
-                await reservation.save();
+//                 reservation.status = 'notified';
+//                 await reservation.save();
 
-                console.log(`Notification sent for available book "${book.title}" to user "${user.firstname}"`);
-            }
-        }
-    } catch (error) {
-        console.error('Error checking available books:', error);
-    }
-};
+//                 console.log(`Notification sent for available book "${book.title}" to user "${user.firstname}"`);
+//             }
+//         }
+//     } catch (error) {
+//         console.error('Error checking available books:', error);
+//     }
+// };
 
 
 
-  module.exports ={ checkOverdueBooksAndNotify,checkAvailableBooksAndNotify  };
+  module.exports ={ checkOverdueBooksAndNotify  };

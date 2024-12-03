@@ -26,27 +26,24 @@ app.use('/api', DashboardRouter);
 
 app.use('/books',BooksRouter);
 
-// For sending emails and notifications
-cron.schedule('0 8 * * *', () => {
-  console.log('Checking for overdue books...');
+cron.schedule('0 20 * * *', () => {
+  console.log('Checking for overdue books at 8 PM...');
   checkOverdueBooksAndNotify();
-  checkAvailableBooksAndNotify();
 });
 cron.schedule('0 * * * *', async () => {
   console.log("Checking available books and processing reservations...");
-
-  // Fetch the books that you want to check for availability
-  const books = await BookModel.find({ bookCount: { $gt: 0 } }); // Example query to find books with availability
-
-  // Loop through the available books and process the reservation queue for each
+  const books = await BookModel.find({ bookCount: { $gt: 0 } }); 
   for (const book of books) {
     console.log(`Processing book ID: ${book._id}`);
-    await processQueue(book._id); // Process the queue for each available book using the correct book._id
+    await processQueue(book._id); 
   }
 });
-// For calculating fines
-cron.schedule('0 0 * * *', () => calculateFines());
-// checkOverdueBooksAndNotify();
+
+cron.schedule('0 0 * * *', () =>{
+  console.log("Calculating fines");
+  calculateFines();
+});
+
 processQueue();
 calculateFines();
 

@@ -59,12 +59,5 @@ router.get('/check-overdue-books', async (req, res) => {
       res.status(500).json({ message: 'Error fetching notifications', error: error.message });
     }
   });
-  router.get('/available-books', async (req, res) => {
-    try {
-      await checkAvailableBooksAndNotify();
-      res.status(200).json({ message: 'available books checked and notifications sent successfully!' });
-    } catch (error) {
-      res.status(500).json({ message: 'Error checking available books or sending notifications', error: error.message });
-    }
-});
+
 module.exports= router;

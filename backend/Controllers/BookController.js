@@ -599,9 +599,7 @@ const processQueue = async (bookId) => {
             if (book && book.bookCount > 0 && user) {
                 console.log(`Processing reservation for book: "${book.title}"`);
 
-                // Ensure bookId and userId are correctly populated and accessible
-                console.log(`Book ID: ${book._id}`);
-                console.log(`User ID: ${user._id}`);
+              
 
                 // Filter and sort the reservations for this book
                 const sortedReservations = reservedBooks
@@ -662,7 +660,7 @@ const processQueue = async (bookId) => {
                     await highestPointUserReservation.save();
 
                     // Update book inventory
-                    book.bookCount -= 1;
+             
                     await book.save();
 
                     console.log(`Book "${book.title}" assigned to user "${highestPointUserReservation.userId.firstname}"`);
