@@ -16,7 +16,8 @@ const {addbook,
     contribution,displayContribution,reserveBook
 ,displayReservedBooks, 
 userReservedBooks,fetchNotifications
-,markNotification,checkOverdueBooksAndNotify,getAllUserNotifications } = require('../Controllers/BookController');
+,markNotification,checkOverdueBooksAndNotify,getAllUserNotifications, 
+Payment} = require('../Controllers/BookController');
 const { checkAvailableBooksAndNotify } = require('../tasks/Notify');
 
 
@@ -41,7 +42,7 @@ router.get('/reservedbooks',displayReservedBooks)
 router.get('/userreservedbooks',ensureAuthenticated,userReservedBooks);
 router.get('/notifications',ensureAuthenticated,fetchNotifications );
 router.post('/marked-read-notifications',markNotification);
-
+router.post('/payments',ensureAuthenticated,Payment)
 
 router.get('/check-overdue-books', async (req, res) => {
     try {

@@ -44,8 +44,8 @@ cron.schedule('0 0 * * *', () =>{
   calculateFines();
 });
 
-processQueue();
-calculateFines();
+
+
 
 app.listen(process.env.PORT,()=>{
     console.log(`Server running on port ${process.env.PORT}`);

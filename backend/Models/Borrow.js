@@ -26,7 +26,13 @@ const BorrowSchema = new mongoose.Schema({
     fine:{
         type:Number,
         default:0,
-    }
+    },
+    finePaid:{
+        type:Number,
+        default:0,
+    },
+    isPaid: { type: Boolean, default: false },
+    returnDate: Date,
 
 },{timestamps:true})
 

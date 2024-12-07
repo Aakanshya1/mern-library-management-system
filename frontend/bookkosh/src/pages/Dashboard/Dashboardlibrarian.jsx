@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Routes, Route, useNavigate } from 'react-router-dom';
+import { Link, Routes, Route, useNavigate, Outlet } from 'react-router-dom';
 import { handleSuccess } from '../../../utils';
 import logo from '../../assets/images/logo.png';
 import { FaCalendarAlt,FaUsers,FaUser,FaBook } from 'react-icons/fa';
 import { IoMdTime } from "react-icons/io";
-import Books from '../../components/Librarian/Books';
-import Home from '../../components/Librarian/Librarianhome';
-import Users from '../../components/Librarian/Users';
-import Profile from '../../components/Librarian/Profile';
+
 import Button from '../../components/Button';
-import Status from '../../components/Librarian/Status';
+
 import { ToastContainer } from 'react-toastify';
 import axios from 'axios';
 
@@ -123,14 +120,7 @@ function Dashboardlibrarian() {
             </div>
           </div>
 
-        
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/librarian-books" element={<Books />} />
-            <Route path="/librarian-users" element={<Users />} />
-            <Route path="/librarian-status" element={<Status />} />
-            <Route path="/librarian-profile" element={<Profile />} />
-          </Routes>
+        <Outlet/>
         </div>
       </div>
 

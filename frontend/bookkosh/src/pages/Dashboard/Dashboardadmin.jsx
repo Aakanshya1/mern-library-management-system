@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Routes, Route, useNavigate } from 'react-router-dom';
+import { Link, Routes, Route, useNavigate, Outlet } from 'react-router-dom';
 import { handleSuccess } from '../../../utils';
 import logo from '../../assets/images/logo.png';
 import { FaCalendarAlt,FaUsers,FaUser,FaBook } from 'react-icons/fa';
 import { IoMdTime } from "react-icons/io";
-import AdminHome from '../../components/Admin/AdminHome';
-import AllBooks from '../../components/Admin/AllBooks';
-import AllUsers from '../../components/Admin/AllUsers';
-import Status from '../../components/Admin/Status';
-import Profile from '../../components/Admin/Profile';
-import ContributionList from '../../components/Admin/ContributionList';
+
 import Button from '../../components/Button';
 import { ToastContainer } from 'react-toastify';
 import axios from 'axios';
@@ -128,14 +123,15 @@ function Dashboardadmin() {
           </div>
 
         
-          <Routes>
+          {/* <Routes>
             <Route path="/" element={<AdminHome />} />
             <Route path="/admin-books" element={<AllBooks />} />
             <Route path="/admin-users" element={<AllUsers />} />
             <Route path="/admin-status" element={<Status />} />
             <Route path="/admin-contributions" element={<ContributionList />} />
             <Route path="/admin-profile" element={<Profile />} />
-          </Routes>
+          </Routes> */}
+          <Outlet/>
         </div>
       </div>
 

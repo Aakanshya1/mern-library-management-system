@@ -1,4 +1,3 @@
-const bcrypt = require('bcrypt');
 const cloudinary = require('../utils/cloudinary');
 const UserModel = require('../Models/Userdata');
 const { quickSortUsers } = require('../utils/Sortuser');

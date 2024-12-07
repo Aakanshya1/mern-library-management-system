@@ -11,7 +11,7 @@ const {sendOverdueEmail} = require('../utils/EmailService')
 const cron = require('node-cron');
 const Notification = require('../Models/Notifications');
 const {sendAvailableBookEmail}= require('../utils/EmailService')
-
+const Transaction = require("../Models/Transaction"); 
 
 
 const addbook= async(req,res)=>{
@@ -378,6 +378,7 @@ const displayReturnedBooks = async (req,res)=>{
             fromDate:BookBorrow.fromDate,
             returned:BookBorrow.returned,
             fine:BookBorrow.fine,
+            finePaid:BookBorrow.finePaid
         }))
         if(returnedbooks.length == 0){
             return res.status(404)
@@ -388,7 +389,7 @@ const displayReturnedBooks = async (req,res)=>{
             message:"Returned books retrived successfully",
             returnedbooks:returnedbooks,
         })
-       
+    
     } catch (error) {
         console.error('Error fetching Returned books:', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -410,6 +411,7 @@ const userReturnedBooks = async(req,res)=>{
             fromDate:BookBorrow.fromDate,
             returned:BookBorrow.returned,
             fine:BookBorrow.fine,
+            finePaid:BookBorrow.finePaid,
             bookimage:BookBorrow.bookId.bookimage,
         }))
         if(returnedbooklist.length == 0){
@@ -789,6 +791,50 @@ const getAllUserNotifications = async () => {
       throw new Error('Error fetching all notifications: ' + error.message);
     }
   };
+  const Payment = async (req, res) => {
+    const { borrowId,finePaid } = req.body;
+    console.log('Borrow ID:', borrowId);
+    console.log('Fine Paid:', finePaid);
+    try {
+        const userId = req.user._id;
+        const paidfine = await BookBorrow.findById(borrowId)
+        if (!paidfine) {
+          console.error('Borrowed record not found for ID:', borrowId);
+          return res.status(404).json({ message: 'Borrowed record not found' });
+        }
+    
+        // Create a new transaction record
+        const newTransaction = new Transaction({
+          borrowId,
+          finePaid,
+          userId,
+          paymentDate: new Date(),
+        });
+    
+        await newTransaction.save();
+        console.log('Transaction created:', newTransaction);
+    
+        // Update the fine amount for the borrowed record
+      const borrowedfine = await BookBorrow.findById(newTransaction.borrowId);
+  if(!borrowedfine){
+    return res.status(404).json({message:'no borrowed book'})
+  }
+        borrowedfine.fine = 0;
+        borrowedfine.isPaid  = true;
+        borrowedfine.finePaid = newTransaction.finePaid;
+  
+      await borrowedfine.save();
+  
+
+      res.status(200).json({
+        message: 'Payment processed successfully',
+        transaction: newTransaction,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'An error occurred while processing payment' });
+    }
+  };
   
 
 module.exports = { addbook , 
@@ -806,5 +852,5 @@ module.exports = { addbook ,
     overduebooks,
     contribution,displayContribution,reserveBook,
     processQueue, displayReservedBooks,userReservedBooks,fetchNotifications
-    ,markNotification,getAllUserNotifications 
+    ,markNotification,getAllUserNotifications , Payment 
 };

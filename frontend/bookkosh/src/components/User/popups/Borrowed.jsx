@@ -1,13 +1,15 @@
 import React , { useEffect, useState } from 'react'
 import axios from 'axios';
 import ReturnBookPopup from './ReturnBook'
+import Button from '../../Button';
+
 function Borrowed() {
     const [borrowedbooklist, setBorrowedBookList] = useState([]);  // Initializing to empty array
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showReturnPopup,setShowReturnPopup]= useState(false);
     const [bookToReturn,setBookToReturn]=useState(null);
-  
+
    useEffect(()=>{
     const fetchBooks = async()=>{
       try {
@@ -51,7 +53,8 @@ const handleReturnClick = (borrowed) => {
           <p className='flex flex-col'><span className='text-black  font-bold'>Submission:</span>{new Date(borrowedbooks.toDate).toLocaleDateString()}</p>
           <p className='flex flex-col'><span className='text-black  font-bold'>Status:</span>{borrowedbooks.returned ? "Returned" : "Borrowed"}</p>
           <p className='flex flex-col'><span className='text-black  font-bold'>Total Fine:</span>Rs. {borrowedbooks.fine}</p>
-          <button onClick={() => handleReturnClick(borrowedbooks)} className=' py-2 border bg-blue rounded-md text-white uppercase hover:bg-white hover:text-blue hover:border'>Return</button>
+         <Button isprimary onClick={() => handleReturnClick(borrowedbooks)} text={"Return"} />
+         
           </div>
          
          

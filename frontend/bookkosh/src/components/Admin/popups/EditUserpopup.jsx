@@ -18,7 +18,7 @@ const EditUserpopup = ({ showEditPopup, setShowEditPopup, currentUser }) => {
         firstname:currentUser.firstname,
         lastname:currentUser.lastname,
         email:currentUser.email,
-        phone:currentUser.phone,
+        phone:currentUser.phone, 
         role:currentUser.role,
       });
     }
