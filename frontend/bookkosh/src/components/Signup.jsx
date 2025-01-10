@@ -40,7 +40,9 @@ function Signup() {
             if(!firstname || !lastname || !phone ||!email || !password || !confirmpassword){
                 return handleError("all fields are required");
             }
-
+            if (password !== confirmpassword) {
+              return handleError("Passwords do not match");
+          }
             try {
                 const url = 'http://localhost:3000/auth/signup';
                 const response = await fetch(url, {

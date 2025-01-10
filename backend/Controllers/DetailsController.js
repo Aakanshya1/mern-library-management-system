@@ -4,6 +4,8 @@ const { quickSortUsers } = require('../utils/Sortuser');
 const { getAllUsers } = require('../Services/Userservice');
 ;
 
+
+//Edit and update user profile by user
 const userdisplay = async (req, res) => {
     try {
         if (!req.user || !req.user._id) {
@@ -58,6 +60,7 @@ const userdisplay = async (req, res) => {
     }
 };
 
+//display user details of logged in user
 const showuser = async (req, res) => {
     try {
         const user = await UserModel.findById(req.user._id);
@@ -69,6 +72,8 @@ const showuser = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
+
+//Admin and libraian sees all user 
 const showAlluser  = async(req,res)=>{
     try {
         const users = await UserModel.find();
@@ -88,9 +93,9 @@ const showAlluser  = async(req,res)=>{
             message: 'Internal server error' 
         });
     }
-
-  
 }
+
+//Edit user details by admin
 const userUpdate = async(req,res)=>{
     try {
         const {_id} = req.params;
@@ -120,7 +125,7 @@ const userUpdate = async(req,res)=>{
         res.status(500).json({message:"Internal Server Error"});
     }
 }
-
+//Delete user
 const userDelete = async(req,res)=>{
     try {
         const {_id} = req.params;
@@ -142,6 +147,8 @@ const userDelete = async(req,res)=>{
         .json({message:"Internal Server Error"});
     }
 }
+
+//Admin and librarian searches for user by their name (binary search used)
 const SearchUserByName = async (req, res) =>{
     const {firstnameprefix} = req.query;
     console.log(firstnameprefix);

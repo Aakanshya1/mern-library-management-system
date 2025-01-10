@@ -110,40 +110,40 @@ export default function Dashboard() {
             <Button text="Logout" onClick={handleLogout} />
           </div>
         </div>
+       
 
-        {/* Main Content */}
-        <div className="flex-[0.9] flex flex-col gap-6 p-4 bg-bgcolor md:overflow-y-auto">
-          <div className="bg-white p-2 rounded-full shadow-sm gap-60 justify-between md:flex flex-row hidden">
-            <div className="flex flex-row w-full justify-around">
-              <p className="text-lg flex items-center gap-2 ">
-                <span className="text-blue text-2xl"><FaCalendarAlt /></span>{formattedDate}
-              </p>
-              <p className="text-lg flex items-center gap-2">
-                <span className="text-blue text-2xl"><IoMdTime /></span>{formattedTime}
-              </p>
-            </div>
-            <div className="flex flex-row text-center justify-center align-middle">
-              <div className="p-2">
-                <span className="text-4xl text-blue" onClick={toggleDropdown}>
-                  <IoIosNotifications />
-                </span>
-              </div>
-              <div className="flex flex-row gap-6 rounded-full justify-center items-center p-1 hover:bg-bgcolor cursor-pointer">
-                <div className="rounded-full w-[40px] h-[40px] flex">
-                  <img
-                    src={avatarPreview || ''} // Replace with your default avatar path
-                    alt="Avatar"
-                    className="w-[40px] h-[40px] rounded-full"
-                  />
-                </div>
-                <p className="uppercase text-sm">{loggedInUser}</p>
-              </div>
-            </div>
-          </div>
-
-          
-                 <Outlet />
+{/* Main Content */}
+<div className="flex-[0.9] flex flex-col gap-6 p-4 pt-0 bg-bgcolor md:overflow-y-auto overflow-y-auto md:h-auto h-screen">
+  <div className="bg-white p-2 rounded-full shadow-sm gap-60 justify-between md:flex flex-row ">
+    <div className="flex flex-row w-full justify-around ">
+      <p className="text-lg flex items-center gap-2">
+        <span className="text-blue text-2xl"><FaCalendarAlt /></span>{formattedDate}
+      </p>
+      <p className="text-lg flex items-center gap-2">
+        <span className="text-blue text-2xl"><IoMdTime /></span>{formattedTime}
+      </p>
+    </div>
+    <div className="flex flex-row text-center justify-center align-middle">
+      <div className="p-2">
+        <span className="text-4xl text-blue" onClick={toggleDropdown}>
+          <IoIosNotifications />
+        </span>
+      </div>
+      <div className="flex flex-row gap-6 rounded-full justify-center items-center p-1 hover:bg-bgcolor cursor-pointer">
+        <div className="rounded-full w-[40px] h-[40px] flex">
+          <img
+            src={avatarPreview || ''} // Replace with your default avatar path
+            alt="Avatar"
+            className="w-[40px] h-[40px] rounded-full"
+          />
         </div>
+        <p className="uppercase text-sm">{loggedInUser}</p>
+      </div>
+    </div>
+  </div>
+
+  <Outlet />
+</div>
 
         {/* Notifications Dropdown */}
         {showDropdown && (

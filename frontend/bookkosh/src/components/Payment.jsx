@@ -14,21 +14,21 @@ function Payment() {
   };
 
   return (
-    <div className="login-container flex flex-col w-fit justify-center">
-      <div className="form-container border-2 p-4 justify-center w-fit text-center">
-        <h1>Login to Payment Gateway</h1>
+    <div className="login-container  h-screen w-screen flex flex-col justify-center items-center">
+      <div className="form-container border-2 p-8 rounded-md text-blue shadow-2xl  w-fit ">
+        <p className='font-bold text-2xl'>Welcome To Payment Gateway</p>
         <form
-          className="flex flex-col"
+          className="flex flex-col gap-3"
           onSubmit={(e) => {
             e.preventDefault();
             handleLogin();
           }}
         >
           <label htmlFor="phone">Phone no.</label>
-          <input type="text" className="border" placeholder="Phone no." required />
+          <input type="text" className="p-2 border rounded-lg" placeholder="Phone no." required />
           <label htmlFor="password">Password</label>
-          <input type="password" placeholder="Password" required />
-          <Button type="submit" text={"Login"} />
+          <input className=' p-2 border rounded-lg' type="password" placeholder="Password" required />
+          <Button isprimary type="submit" text={"Login"} />
         </form>
       </div>
     </div>

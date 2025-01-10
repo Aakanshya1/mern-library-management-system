@@ -11,6 +11,12 @@ const signup = async(req,res)=>{
             return res.status(409)
             .json({message:"user already exist,yoou can login", success:false})
         }
+        if (password !== confirmpassword) {
+            return res.status(400).json({
+                message: "Passwords do not match.",
+                success: false,
+            });
+        }
         const userModel = new UserModel({firstname,lastname,phone,email,password:await bcrypt.hash(password,10),confirmpassword})
      
         await userModel.save();
@@ -35,15 +41,14 @@ const login= async(req,res)=>{
     try {
         const{email,password}=req.body;
         const user = await UserModel.findOne({email});
-        const errorMsg= 'Auth failed email or password is wrong';
         if(!user){
             return res.status(403)
-            .json({message:errorMsg, success:false})
+            .json({message:'Invalid email', success:false})
         }
       const isPassEqual = await bcrypt.compare(password, user.password);
       if (!isPassEqual) {
         return res.status(403)
-        .json({message:errorMsg, success:false})
+        .json({message:'Wrong Password', success:false})
       }
 
       const jwtToken =jwt.sign(
@@ -62,6 +67,7 @@ const login= async(req,res)=>{
             role: user.role 
         })
     } catch (error) {
+        console.log('Error during login:', error)
         res.status(500)
         .json({
             message:"Internal server error",

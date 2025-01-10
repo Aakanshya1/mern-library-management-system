@@ -98,7 +98,7 @@ function Dashboardadmin() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-[0.9] flex flex-col gap-6 p-4 bg-bgcolor md:overflow-y-auto ">
+        <div className="flex-[0.9] flex flex-col gap-6 p-4 pt-0 bg-bgcolor md:overflow-y-auto overflow-y-auto md:h-auto h-screen ">
           {/* Top Bar */}
           <div className="bg-white p-2 rounded-full shadow-sm gap-60 justify-between md:flex flex-row hidden">
             <div className="flex flex-row w-full justify-around">

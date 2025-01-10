@@ -36,11 +36,6 @@ const checkOverdueBooksAndNotify = async () => {
             user.notifications = user.notifications || [];
             user.notifications.push(notification);  // Add the notification to the user's list
             await user.save(); // Save the user document
-    
-         
-    
-    
-      
           const bookDetails = [
             {
               title: book.bookId.title,

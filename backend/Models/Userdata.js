@@ -27,7 +27,8 @@ const UserSchema = new mongoose.Schema({
        
     },
     role: { type: String, 
-        enum: ['user', 'admin', 'librarian'], default: 'user'
+        enum: ['user', 'admin', 'librarian'], 
+        default: 'user'
     },
     borrowedpoints:{
         type:Number,

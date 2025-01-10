@@ -66,10 +66,14 @@ function Login() {
                         navigate('/dashboard');
                     }
                 }, 1000);
+            } else if (message === "Wrong password") {
+                handleError("Incorrect password. Please try again.");
+            } else if (message === "Invalid email") {
+                handleError("Email not found. Please check and try again.");
             } else if (details) {
                 const errorMessage = details.length > 0 ? details[0] : message;
                 handleError(errorMessage);
-            } else if (!success) {
+            } else {
                 handleError(message);
             }
         } catch (err) {
