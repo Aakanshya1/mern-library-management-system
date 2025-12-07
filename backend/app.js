@@ -17,8 +17,17 @@ const cron = require('node-cron');
 const calculateFines = require("./tasks/FineCalculator");
 const {checkOverdueBooksAndNotify,checkAvailableBooksAndNotify} = require('./tasks/Notify')
 const {processQueue} = require('./Controllers/BookController')
-
-app.use(cors());
+const allowedOrigins = [
+  "https://mern-library-management-system-33yv3htz6.vercel.app",
+  "http://localhost:5173",
+  "https://mern-library-management-system-h946.onrender.com"
+];
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 
 app.use('/auth',AuthRouter);
 
