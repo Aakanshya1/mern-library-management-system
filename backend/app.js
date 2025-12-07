@@ -4,6 +4,7 @@ const express= require ('express');
 const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
+
 const AuthRouter = require('./routes/AuthRouter')
 const DashboardRouter = require('./routes/DashboardRouter')
 const UserModel = require('./Models/Userdata')
@@ -43,7 +44,7 @@ cron.schedule('0 0 * * *', () =>{
   console.log("Calculating fines");
   calculateFines();
 });
-
+checkOverdueBooksAndNotify();
 
 
 

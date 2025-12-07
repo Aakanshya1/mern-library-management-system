@@ -45,18 +45,18 @@ function ReturnedBook() {
     <p className="text-center mt-4">No borrowed books</p>
   ) : (
     returnedbooks.map((returnedbook) => (
-      <div key={returnedbook._id} className="grid grid-cols-7 gap-10  text-left text-sm  bg-white  p-2 ">
+      <div key={returnedbook._id} className="md:grid grid-cols-1 md:grid-cols-7 gap-10  text-left text-sm  bg-white  p-2 ">
         <p>{returnedbook.isbn}</p>
         <p>{returnedbook.title}</p>
         <p>
           {returnedbook.firstname} <span>{returnedbook.lastname}</span>
         </p>
         <p className=''>{returnedbook.email}</p>
-        <span className='text-right'> <p className=''>{new Date(returnedbook.fromDate).toLocaleDateString()}</p>
+        <span className='md:text-right'> <p className=''>{new Date(returnedbook.fromDate).toLocaleDateString()}</p>
         <p >{new Date(returnedbook.toDate).toLocaleDateString()}</p></span>
         
-        <p className='text-right'>{returnedbook.returned ? "Yes" : "No"}</p>
-        <p className='text-right'><span>Rs.</span>{returnedbook.finePaid}</p>
+        <p className='md:text-right'>{returnedbook.returned ? "Yes" : "No"}</p>
+        <p className='md:text-right'><span>Rs.</span>{returnedbook.finePaid}</p>
       </div>
     ))
   )}

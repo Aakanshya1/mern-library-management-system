@@ -35,7 +35,7 @@ export default function Dashboard() {
         setAvatarPreview(response.data.avatar);
       } catch (err) {
         setError(err.message);
-      }
+      }       
     };
 
     fetchAvatar();

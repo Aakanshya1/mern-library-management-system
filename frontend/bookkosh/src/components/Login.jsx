@@ -52,11 +52,6 @@ function Login() {
                 localStorage.setItem('token', jwtToken);
                 localStorage.setItem('loggedInuser', firstname);
                 localStorage.setItem('role', role);
-         
-              
-       
-            
-
                 setTimeout(() => {
                     if (role === 'admin') {
                         navigate('/admindashboard');
