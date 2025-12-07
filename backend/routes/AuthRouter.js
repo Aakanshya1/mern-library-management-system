@@ -1,4 +1,4 @@
-const { signup, login } = require('../Controllers/AuthController');
+const { signup, login } = require('../Controllers/AuthController').default;
 const ensureAuthenticated = require('../Middleware/Auth');
 const { signupvalidation, loginpvalidation } = require('../Middleware/Validation');
 
