@@ -9,7 +9,7 @@ function Notification() {
     // Fetch notifications for the user
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/books/notifications', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/books/notifications`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
@@ -26,27 +26,6 @@ function Notification() {
     fetchNotifications();
   }, []);
 
-//   const handleMarkAsRead = async (notificationId) => {
-//     try {
-//       const response = await axios.patch('http://localhost:3000/books/usernotifications/', {}, {
-//         headers: {
-//           Authorization: `Bearer ${localStorage.getItem('token')}`,
-//         },
-//       });
-//       if (response.data.message === 'Notification marked as read') {
-//         // Update local state to mark the notification as read
-//         setNotifications((prevNotifications) =>
-//           prevNotifications.map((notification) =>
-//             notification._id === notificationId
-//               ? { ...notification, read: true }
-//               : notification
-//           )
-//         );
-//       }
-//     } catch (error) {
-//       console.error('Error marking notification as read', error);
-//     }
-//   };
 
   if (loading) {
     return <p>Loading notifications...</p>;

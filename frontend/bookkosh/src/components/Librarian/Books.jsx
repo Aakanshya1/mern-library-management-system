@@ -14,7 +14,7 @@ function Books() {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/books/showallbooks');
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/books/showallbooks`);
         setAllBooks(response.data.books);
         setBooks(response.data.books);
         setLoading(false);
@@ -30,7 +30,7 @@ function Books() {
     SetSearchQuery(isbnPrefix);
     if(isbnPrefix){
       try {
-        const response = await axios.get(`http://localhost:3000/books/searchisbn?isbnPrefix=${isbnPrefix}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/books/searchisbn?isbnPrefix=${isbnPrefix}`);
         if(response.data.success && response.data.books.length >0){
           console.log("response from server:", response.data);
           setBooks(response.data.books);

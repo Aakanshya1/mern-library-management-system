@@ -22,7 +22,7 @@ const User = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/user', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/user`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
@@ -79,7 +79,7 @@ const User = () => {
         formData.append('avatar', userData.avatar);
       }
 
-      const response = await axios.post('http://localhost:3000/api/user', formData, {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/user`, formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'multipart/form-data',

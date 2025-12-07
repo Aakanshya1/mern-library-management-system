@@ -10,7 +10,7 @@ function Contributionlist() {
   useEffect(() => {
     const fetchContributionBooks = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/books/contribution-list');
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/books/contribution-list`);
         setContributionBooks(response.data.contributionbooks);
         console.log(response);
         setLoading(false);

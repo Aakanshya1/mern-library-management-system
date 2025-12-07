@@ -52,7 +52,7 @@ const AddBook = ({ showAddPopup, setShowAddPopup }) => {
     });
 
     try {
-      await axios.post('http://localhost:3000/books/addbook', form, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/books/addbook`, form, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

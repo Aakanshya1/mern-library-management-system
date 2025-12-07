@@ -10,7 +10,7 @@ function Reserved() {
  useEffect(()=>{
   const fetchBooks = async()=>{
     try {
-      const response = await axios.get('http://localhost:3000/books/userreservedbooks',{
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/books/userreservedbooks`,{
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

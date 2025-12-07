@@ -29,7 +29,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchAvatar = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/user', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/user`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
         setAvatarPreview(response.data.avatar);

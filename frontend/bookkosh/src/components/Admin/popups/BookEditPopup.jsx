@@ -65,7 +65,7 @@ const BookEditPopup = ({ showEditPopup, setShowEditPopup, currentBook }) => {
     }
     
     try {
-      await axios.post(`http://localhost:3000/books/updatebook/${currentBook._id}`, updatedFormData, {
+      await axios.post(`${import.meta.env.VITE_API_URL}/books/updatebook/${currentBook._id}`, updatedFormData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

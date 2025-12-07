@@ -8,7 +8,7 @@ function ReturnedBook() {
   useEffect(() => {
     const fetchReturnedBooks = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/books/showreturnedbooks');
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/books/showreturnedbooks`);
         setReturnedBooks(response.data.returnedbooks);
         console.log(response);
         console.log(response.data.returnedbooks);

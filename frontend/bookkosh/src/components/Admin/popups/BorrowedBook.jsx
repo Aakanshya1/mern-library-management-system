@@ -9,7 +9,7 @@ function BorrowedBook() {
   useEffect(() => {
     const fetchBorrowedBooks = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/books/showborrowedbooks');
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/books/showborrowedbooks`);
         setBorrowedBooks(response.data.borrowedbooks);
         console.log(response);
         console.log(response.data.borrowedbooks);

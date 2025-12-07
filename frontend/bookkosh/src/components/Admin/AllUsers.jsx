@@ -20,7 +20,7 @@ const [AllUsers,setAllUsers] = useState([]);
 useEffect(()=>{
   const fetchUsers = async()=>{
     try{
-      const response = await axios.get('http://localhost:3000/api/alluser');
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/alluser`);
       setAllUsers(response.data.users);
       setUsers(response.data.users);
       setLoading(false);
@@ -37,7 +37,7 @@ const handleSearch = async (e)=>{
   SetSearchQuery(firstnameprefix);
   if(firstnameprefix){
     try {
-      const response = await axios.get(`http://localhost:3000/api/searchedUser?firstnameprefix=${firstnameprefix}`)
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/searchedUser?firstnameprefix=${firstnameprefix}`)
       if (response.data.success && response.data.users.length >0) {
         console.log("response from server:", response.data);
         setUsers(response.data.users);

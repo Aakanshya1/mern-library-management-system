@@ -13,7 +13,7 @@ function Borrowed() {
    useEffect(()=>{
     const fetchBooks = async()=>{
       try {
-        const response = await axios.get('http://localhost:3000/books/userborrowedbooks',{
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/books/userborrowedbooks`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },

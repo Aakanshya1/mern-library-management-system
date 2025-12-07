@@ -27,7 +27,7 @@ function Librarianhome() {
   useEffect(()=>{
     const fetchstats= async () =>{
       try {
-        const response = await axios.get('http://localhost:3000/books/status');
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/books/status`);
         setStats(response.data);
         console.log(response.data);
         setLoading(false);

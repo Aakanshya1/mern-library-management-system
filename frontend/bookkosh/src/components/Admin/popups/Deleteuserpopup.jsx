@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const Deleteuserpopup = ({ showDeletePopup, setShowDeletePopup, userToDelete }) => {
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:3000/api/userdelete/${userToDelete._id}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/userdelete/${userToDelete._id}`);
       toast.success('Book deleted successfully');
       setTimeout(() => {
         setShowDeletePopup(false);

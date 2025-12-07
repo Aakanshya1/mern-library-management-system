@@ -8,7 +8,7 @@ function ReservedBook() {
     useEffect(() => {
       const fetchReservedBooks = async () => {
         try {
-          const response = await axios.get('http://localhost:3000/books/reservedbooks');
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/books/reservedbooks`);
           setReservationBooks(response.data.reservationbooks);
           console.log(response);
           console.log(response.data.reservationbooks);

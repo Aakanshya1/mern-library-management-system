@@ -13,7 +13,7 @@ const BookReserve = ({ showReservePopup, setShowReservePopup, currentBook }) => 
 
       // Send POST request to backend for book reservation
       const response = await axios.post(
-        `http://localhost:3000/books/reservation/${currentBook._id}`,
+        `${import.meta.env.VITE_API_URL}/books/reservation/${currentBook._id}`,
         reserveData,
         {
           headers: {

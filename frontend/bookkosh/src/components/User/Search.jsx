@@ -18,7 +18,7 @@ function Search() {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/books/showallbooks");
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/books/showallbooks`);
         setBooks(response.data.books);
         setFilteredBooks(response.data.books);
         setLoading(false);
@@ -47,7 +47,7 @@ const handleSearch = async (e) => {
   if (bookPrefix) {
       try {
           // Update the search parameter to 'prefix' if that's what your backend expects
-          const response = await axios.get(`http://localhost:3000/books/search?prefix=${bookPrefix}`);
+          const response = await axios.get(`${import.meta.env.VITE_API_URL}/books/search?prefix=${bookPrefix}`);
           console.log("Response from server:", response.data); // Log the complete response for debugging
 
           if (response.data.success && response.data.books.length > 0) {

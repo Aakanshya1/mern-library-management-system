@@ -32,7 +32,7 @@ const ReturnBook = ({ showReturnPopup, setShowReturnPopup, bookToReturn, setBorr
 
 
     const response = await axios.post(
-      'http://localhost:3000/books/returnbooks',
+      `${import.meta.env.VITE_API_URL}/books/returnbooks`,
       { borrowId: bookToReturn._id },
       {
         headers: {
@@ -50,7 +50,7 @@ const ReturnBook = ({ showReturnPopup, setShowReturnPopup, bookToReturn, setBorr
    
 
     const updatedBooksResponse = await axios.get(
-      'http://localhost:3000/books/userborrowedbooks',
+      `${import.meta.env.VITE_API_URL}/books/userborrowedbooks`,
       {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       }

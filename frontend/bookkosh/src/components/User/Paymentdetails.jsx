@@ -20,7 +20,7 @@ function PaymentDetails({ setCurrentComponent }) {
     try {
       console.log('Paying fine for book:', bookDetails._id);
       const response = await axios.post(
-        'http://localhost:3000/books/payments',
+        `${import.meta.env.VITE_API_URL}/books/payments`,
         { borrowId: bookDetails._id, finePaid: bookDetails?.fine },
         {
           headers: {
