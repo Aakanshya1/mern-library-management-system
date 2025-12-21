@@ -15,11 +15,13 @@ function Login() {
     const [isVisible, setIsVisible] = useState(false);
     const navigate = useNavigate();
 
-    // Check if user is already logged in and navigate accordingly
+   
     
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+
+
         setLoginInfo(prevState => ({ ...prevState, [name]: value }));
     };
 
